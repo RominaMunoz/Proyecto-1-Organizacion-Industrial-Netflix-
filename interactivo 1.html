@@ -224,9 +224,9 @@ function updateContent() {
 
             text.innerHTML = `
             <span class="icon"></span>
-             Netflix ha fortalecido su integración vertical hacia atrás al producir internamente gran parte de su contenido. Esto le permite reducir su dependencia de estudios externos y tomar mayor control sobre qué, cómo y cuándo se produce.
-             Al internalizar esta etapa, la empresa disminuye los costos de transacción, evitando procesos complejos de negociación, y limita el riesgo de oportunismo, típico en relaciones con proveedores.
-             En este caso, la integración responde a la necesidad de asegurar contenido estratégico en un entorno altamente competitivo.
+            Netflix ha profundizado su integración vertical hacia atrás al desarrollar internamente una parte significativa de su contenido (<i>Originals</i>). Esta decisión le permite reducir su dependencia de estudios externos y asegurar un flujo constante de producciones alineadas con su estrategia y preferencias de audiencia.
+            Desde el punto de vista económico, esta integración disminuye los <a onclick="showTooltip(event,'Costos de usar el mercado: buscar proveedores, negociar acuerdos y supervisarlos.')">costos de transacción</a>, al evitar procesos complejos de negociación y supervisión con terceros. Además, reduce el <a onclick="showTooltip(event,'Riesgo de que otros actúen en su propio beneficio dentro de un acuerdo.')">riesgo de oportunismo</a>, especialmente relevante cuando existen inversiones específicas o relaciones contractuales prolongadas.
+            En este contexto, la producción interna no solo responde a una decisión creativa, sino también a una lógica de eficiencia y control en un entorno donde el contenido es un activo estratégico clave.
             `;
         } 
         else if (slider.value == 1) {
@@ -234,8 +234,7 @@ function updateContent() {
             flow.classList.remove("active");
 
             text.innerHTML = `
-            Desliza hacia la izquierda o derecha para explorar cómo Netflix integra distintas etapas de su cadena de valor.
-            Este movimiento refleja el equilibrio entre operar en el mercado y organizar internamente sus actividades.
+            Desliza hacia la izquierda o derecha para explorar cómo Netflix integra distintas etapas de su cadena de valor. Este movimiento refleja el equilibrio entre operar en el mercado y organizar internamente sus actividades. 
             `;
         }
         else {
@@ -244,8 +243,9 @@ function updateContent() {
 
             text.innerHTML = `
             <span class="icon"></span>
-            Netflix integra hacia adelante al distribuir contenido mediante su propia red .
-            Esto reduce los costos de coordinación y mejora el control sobre la calidad del servicio.
+            De manera complementaria, Netflix ha avanzado en integración vertical hacia adelante al controlar directamente la distribución de su contenido a través de su infraestructura tecnológica (<i>Open Connect CDN</i>). Esto le permite gestionar de forma más eficiente la entrega del servicio y asegurar una experiencia de usuario consistente a nivel global.
+            Desde la perspectiva organizacional, esta decisión reduce los <a onclick="showTooltip(event,'Costos de organizar y gestionar actividades dentro de la empresa.')">costos de coordinación</a>, al centralizar procesos clave y evitar depender de intermediarios en la entrega del contenido. Asimismo, facilita un mayor control sobre variables críticas como la calidad del streaming y la estabilidad del servicio.
+            En este caso, la integración hacia adelante refleja una estrategia orientada a optimizar la operación y fortalecer la capacidad de la empresa para adaptarse a la demanda en tiempo real. 
             `;
         }
         text.classList.add("active");
