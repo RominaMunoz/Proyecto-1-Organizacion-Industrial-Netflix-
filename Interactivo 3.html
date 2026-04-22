@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix — Nivel Óptimo de Integración</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E50914;
+    --gold: #F5C842;
+    --bg: #080808;
+    --surface: #101010;
+    --surface2: #181818;
+    --border: rgba(255,255,255,0.07);
+    --muted: rgba(255,255,255,0.42);
+    --text: #f0f0f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.5;
+  }
+
+  .ambient {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(229,9,20,0.07) 0%, transparent 65%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* ── CARD ── */
+  .card {
+    width: 100%;
+    max-width: 880px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 44px 44px 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.03);
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--red) 40%, var(--gold) 60%, transparent 100%);
+  }
+
+  /* ── HEADER ── */
+  .card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .card-tag {
+    font-size: 0.68em;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    border: 1px solid rgba(229,9,20,0.3);
+    padding: 4px 14px;
+    border-radius: 100px;
+  }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.8em, 5vw, 2.9em);
+    letter-spacing: 0.06em;
+    text-align: center;
+    line-height: 1;
+    color: #fff;
+  }
+  .card-title span { color: var(--red); }
+  .card-subtitle {
+    font-size: 0.82em;
+    color: var(--muted);
+    font-weight: 300;
+    text-align: center;
+    max-width: 460px;
+    line-height: 1.6;
+  }
+
+  /* ── CHART AREA ── */
+  .chart-area {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  /* ── LEFT LEGEND ── */
+  .legend {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 168px;
+  }
+  .legend-section-title {
+    font-size: 0.6em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-section-title:first-child { margin-top: 10px; border-top: none; padding-top: 0; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.75em;
+    color: var(--muted);
+    margin-bottom: 9px;
+    line-height: 1.3;
+  }
+  .legend-line { width: 22px; height: 2px; border-radius: 2px; flex-shrink: 0; }
+
+  /* clickable legend points */
+  .lp-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.75em;
+    color: var(--text);
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.2s, background 0.2s;
+    margin-bottom: 2px;
+    line-height: 1.25;
+  }
+  .lp-item:hover { opacity: 0.8; background: rgba(255,255,255,0.04); }
+  .lp-item.active { opacity: 1; background: rgba(255,255,255,0.05); }
+  .lp-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── CHART WRAP ── */
+  .chart-wrap {
+    position: relative;
+    flex: 1;
+    height: 300px;
+  }
+  canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: default;
+  }
+
+  /* optimal dashed line */
+  #optMarker {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(to bottom, var(--gold) 0px, var(--gold) 5px, transparent 5px, transparent 10px);
+    opacity: 0.32;
+    pointer-events: none;
+  }
+  #optLabel {
+    position: absolute;
+    top: 6px;
+    font-size: 0.6em;
+    color: var(--gold);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  /* x-axis label */
+  .x-label {
+    text-align: right;
+    font-size: 0.7em;
+    color: var(--muted);
+    letter-spacing: 0.07em;
+    margin-bottom: 22px;
+    padding-right: 4px;
+  }
+
+  /* ── HINT ── */
+  .hint-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 0.76em;
+    color: var(--muted);
+    transition: opacity 0.4s, max-height 0.4s;
+    max-height: 40px;
+    overflow: hidden;
+  }
+  .hint-row.hidden { opacity: 0; max-height: 0; margin-bottom: 0; }
+  .hint-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:0.25} 50%{opacity:1} }
+
+  /* ── INFO PANEL ── */
+  .info-panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.38s ease, transform 0.38s ease, border-color 0.4s;
+    pointer-events: none;
+  }
+  .info-panel.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .info-panel::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: var(--red);
+    transition: background 0.4s;
+  }
+  .info-panel.optimal::before { background: var(--gold); }
+  .info-panel.optimal { border-color: rgba(245,200,66,0.2); }
+
+  .panel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 13px;
+    border-radius: 100px;
+    border: 1px solid;
+    margin-bottom: 14px;
+  }
+
+  .info-estado {
+    font-size: 0.84em;
+    line-height: 1.82;
+    color: rgba(255,255,255,0.78);
+    font-weight: 300;
+    text-align: justify;
+    margin-bottom: 12px;
+  }
+  .info-conclusion {
+    font-size: 0.84em;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+  }
+
+  strong { color: #fff; font-weight: 700; }
+  em { font-style: italic; color: rgba(255,255,255,0.6); font-size: 0.95em; }
+
+  @media (max-width: 640px) {
+    .card { padding: 28px 16px 24px; }
+    .chart-area { flex-direction: column-reverse; gap: 12px; }
+    .legend { width: 100%; flex-direction: row; flex-wrap: wrap; }
+    .legend-section-title { width: 100%; }
+    .chart-wrap { height: 220px; width: 100%; }
+    .x-label { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-tag">Caso Netflix — Teoría de Williamson</span>
+    <h2 class="card-title">Nivel Óptimo de<br><span>Integración Vertical</span></h2>
+    <p class="card-subtitle">Toca cada punto del gráfico para explorar cómo Netflix ha navegado su cadena de valor a lo largo del tiempo.</p>
+  </div>
+
+  <div class="chart-area">
+
+    <!-- LEFT LEGEND -->
+    <div class="legend">
+      <div class="legend-section-title">Curvas</div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#E50914;box-shadow:0 0 5px rgba(229,9,20,0.6);"></div>
+        Costos de transacción
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:rgba(255,255,255,0.72);"></div>
+        Costos de coordinación
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="height:2px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 5px,transparent 5px,transparent 9px);"></div>
+        Costo total
+      </div>
+
+      <div class="legend-section-title">Etapas Netflix</div>
+      <div id="lpContainer"></div>
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-wrap" id="chartWrap">
+      <div id="optMarker"></div>
+      <div id="optLabel">⬥ Óptimo actual</div>
+      <canvas id="grafico"></canvas>
+    </div>
+
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;">
+    <p class="x-label">Nivel de integración vertical →</p>
+  </div>
+
+  <div class="hint-row" id="hintRow">
+    <div class="hint-dot"></div>
+    Selecciona un punto en el gráfico para ver el análisis
+  </div>
+
+  <div class="info-panel" id="infoPanel">
+    <div class="panel-badge" id="panelBadge"></div>
+    <div class="info-estado" id="estadoTexto"></div>
+    <div class="info-conclusion" id="conclusionTexto"></div>
+  </div>
+</div>
+
+<script>
+  const canvas       = document.getElementById("grafico");
+  const ctx          = canvas.getContext("2d");
+  const wrap         = document.getElementById("chartWrap");
+  const infoPanel    = document.getElementById("infoPanel");
+  const estadoEl     = document.getElementById("estadoTexto");
+  const conclusionEl = document.getElementById("conclusionTexto");
+  const panelBadge   = document.getElementById("panelBadge");
+  const hintRow      = document.getElementById("hintRow");
+  const lpContainer  = document.getElementById("lpContainer");
+  const optMarker    = document.getElementById("optMarker");
+  const optLabel     = document.getElementById("optLabel");
+
+  // ── NETFLIX-SPECIFIC POINTS ──
+  const POINTS = [
+    {
+      t: 0.10,
+      color: "#777",
+      label: "DVD por correo",
+      icon: "📀",
+      useEmoji: true,
+      optimal: false,
+      estado: `<strong>1997–2007 · Dependencia total del mercado:</strong> En sus inicios, Netflix dependía completamente de los estudios de Hollywood para licenciar contenido en formato DVD. Su modelo era puramente distribuidor: ninguna producción propia, sin infraestructura tecnológica de entrega. Los altos <em>costos de transacción</em> con los estudios —renegociaciones constantes, acuerdos de ventana de distribución y riesgo de oportunismo— limitaban su margen de maniobra estratégica.`,
+      conclusion: `📀 Vulnerabilidad total ante terceros. Netflix era un intermediario sin activos propios de contenido ni distribución digital.`
+    },
+    {
+      t: 0.30,
+      color: "#a8a8a8",
+      label: "Streaming licenciado",
+      icon: "▶",
+      useEmoji: false,
+      optimal: false,
+      estado: `<strong>2007–2012 · Transición al streaming con contenido externo:</strong> Netflix lanzó su plataforma de streaming, pero aún dependía de licencias adquiridas a estudios como Sony, Disney y NBC Universal. Aunque redujo los costos de transacción físicos (logística DVD), la empresa seguía expuesta a la no renovación de contratos y al incremento de precios por parte de los proveedores de contenido, como ocurrió cuando Disney retiró su catálogo en 2012.`,
+      conclusion: `▶ Mejora en distribución, pero alta dependencia de contenido externo. Los estudios conservaban el poder de negociación.`
+    },
+    {
+      t: 0.50,
+      color: "#F5C842",
+      label: "Equilibrio óptimo",
+      icon: "✦",
+      useEmoji: false,
+      optimal: true,
+      estado: `<strong>2013–2018 · Punto óptimo: Originals + Open Connect CDN:</strong> Netflix alcanzó su punto de máxima eficiencia al combinar producción propia de contenido (<em>House of Cards</em>, <em>Orange is the New Black</em>) con el despliegue de su red de distribución propietaria <em>Open Connect CDN</em>. Esta doble integración —hacia atrás en producción y hacia adelante en distribución— minimizó el costo total: redujo la dependencia de estudios externos y eliminó intermediarios en la entrega del servicio.`,
+      conclusion: `✦ Coherente con Williamson: Netflix internalizó exactamente las etapas donde los costos de transacción superaban los costos de coordinación. Máxima eficiencia organizacional.`
+    },
+    {
+      t: 0.68,
+      color: "#a8a8a8",
+      label: "Expansión global",
+      icon: "🌐",
+      useEmoji: true,
+      optimal: false,
+      estado: `<strong>2019–2022 · Expansión agresiva y primeros signos de sobreintegración:</strong> Netflix escaló su producción original a más de 150 países, abriendo estudios propios, adquiriendo productoras (<em>Animal Logic</em>, <em>Scanline VFX</em>) y desarrollando tecnología de videojuegos. El crecimiento de la estructura interna elevó los <em>costos de coordinación</em>: burocracia en aprobación de proyectos, ineficiencias en producción local y una biblioteca de contenido difícil de gestionar cualitativamente.`,
+      conclusion: `🌐 La expansión acelerada comenzó a erosionar la eficiencia. Mayor complejidad organizacional con retornos decrecientes en calidad de contenido.`
+    },
+    {
+      t: 0.87,
+      color: "#E50914",
+      label: "Crisis y reajuste",
+      icon: "⚠",
+      useEmoji: false,
+      optimal: false,
+      estado: `<strong>2022–2023 · Sobreintegración y ajuste estratégico:</strong> Tras perder 200.000 suscriptores en Q1 2022, Netflix evidenció los costos de haber sobreintegrado: cancela series originales costosas, despide al 13% de su plantilla y reconsidera su modelo de producción. La excesiva internalización generó rigidez: proyectos aprobados con escaso control de calidad, estructuras costosas difíciles de reducir y pérdida de la agilidad que caracterizó su etapa óptima.`,
+      conclusion: `⚠ Sobreintegración verificada: Netflix debió desinvertir en capacidades internas para recuperar eficiencia, reintroduciendo selectivamente acuerdos con estudios externos.`
+    }
+  ];
+
+  // ── CURVE MATH ──
+  function coordCost(t) { return 0.82 * (t - 0.5) ** 2 + 0.08; }
+  function transCost(t) { return 0.78 * (1 - t) ** 1.6 + 0.05; }
+  function totalCost(t) { return coordCost(t) + transCost(t); }
+
+  const PAD = { top: 36, bottom: 8, left: 4, right: 8 };
+
+  function toXY(t, cost, W, H) {
+    return {
+      x: PAD.left + t * (W - PAD.left - PAD.right),
+      y: PAD.top + (1 - cost / 1.1) * (H - PAD.top - PAD.bottom)
+    };
+  }
+
+  let activeIndex = -1;
+
+  // ── RESIZE ──
+  function resizeCanvas() {
+    const rect = wrap.getBoundingClientRect();
+    canvas.width  = rect.width;
+    canvas.height = rect.height;
+    positionOptMarker();
+    draw();
+  }
+
+  function positionOptMarker() {
+    const W   = canvas.width;
+    const xPx = PAD.left + 0.5 * (W - PAD.left - PAD.right);
+    const pct = (xPx / W * 100).toFixed(2) + "%";
+    optMarker.style.left = pct;
+    optLabel.style.left  = pct;
+  }
+
+  // ── DRAW ──
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // always reset shadow before drawing anything
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+
+    const N = 300;
+
+    // grid lines
+    ctx.save();
+    ctx.setLineDash([3, 7]);
+    ctx.strokeStyle = "rgba(255,255,255,0.04)";
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 3; i++) {
+      const y = PAD.top + (i / 4) * (H - PAD.top - PAD.bottom);
+      ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(W - PAD.right, y); ctx.stroke();
+    }
+    ctx.restore();
+
+    // axes
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, H - PAD.bottom); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD.left, H - PAD.bottom); ctx.lineTo(W - PAD.right, H - PAD.bottom); ctx.stroke();
+
+    // ── curve: transaction cost (red, decreasing) ──
+    ctx.save();
+    ctx.strokeStyle = "#E50914";
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = "rgba(229,9,20,0.45)";
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, p = toXY(t, transCost(t), W, H);
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // ── curve: coordination cost (white, U-shape) ──
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,255,255,0.72)";
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = "rgba(255,255,255,0.1)";
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, p = toXY(t, coordCost(t), W, H);
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // ── curve: total cost (dashed gold) ──
+    ctx.save();
+    ctx.strokeStyle = "rgba(245,200,66,0.48)";
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, p = toXY(t, totalCost(t), W, H);
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // ── PASS 1: active glow (below everything) ──
+    POINTS.forEach((pt, idx) => {
+      if (idx !== activeIndex) return;
+      const p = toXY(pt.t, coordCost(pt.t), W, H);
+      ctx.save();
+      const grd = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, 26);
+      grd.addColorStop(0, pt.color + "55");
+      grd.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 26, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // ── PASS 2: all inactive dots ──
+    POINTS.forEach((pt, idx) => {
+      if (idx === activeIndex) return;
+      const p = toXY(pt.t, coordCost(pt.t), W, H);
+      ctx.save();
+      // stroke-only ring so we never paint an opaque fill that blocks curves
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(12,12,12,0.85)";
+      ctx.strokeStyle = pt.color;
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // ── PASS 3: active dot on top ──
+    POINTS.forEach((pt, idx) => {
+      if (idx !== activeIndex) return;
+      const p = toXY(pt.t, coordCost(pt.t), W, H);
+      ctx.save();
+      // soft halo ring
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 13, 0, Math.PI * 2);
+      ctx.fillStyle = pt.color + "22";
+      ctx.fill();
+      // main filled dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = pt.color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // ── PASS 4: labels above all dots ──
+    POINTS.forEach((pt, idx) => {
+      const p   = toXY(pt.t, coordCost(pt.t), W, H);
+      const act = idx === activeIndex;
+      const r   = act ? 9 : 7;
+      const offsetY = r + 13;
+
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      if (pt.useEmoji) {
+        // emoji: just draw at size, no shadow
+        ctx.font = `${act ? 13 : 11}px sans-serif`;
+        ctx.fillStyle = act ? "#fff" : pt.color;
+        ctx.fillText(pt.icon, p.x, p.y - offsetY);
+      } else {
+        // symbol/text
+        ctx.font = `${act ? "bold " : ""}${act ? 13 : 11}px 'DM Sans', sans-serif`;
+        ctx.fillStyle = act ? "#fff" : pt.color;
+        ctx.fillText(pt.icon, p.x, p.y - offsetY);
+      }
+      ctx.restore();
+    });
+  }
+
+  // ── HIT TEST ──
+  function hitTest(clientX, clientY) {
+    const W    = canvas.width, H = canvas.height;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const scaleY = H / rect.height;
+    const cx = (clientX - rect.left) * scaleX;
+    const cy = (clientY - rect.top)  * scaleY;
+    const HIT = 28 * scaleX;
+
+    let best = -1, minD = HIT;
+    POINTS.forEach((pt, idx) => {
+      const p = toXY(pt.t, coordCost(pt.t), W, H);
+      const d = Math.hypot(cx - p.x, cy - p.y);
+      if (d < minD) { minD = d; best = idx; }
+    });
+    return best;
+  }
+
+  // ── SELECT POINT ──
+  function selectPoint(idx) {
+    if (idx < 0 || idx >= POINTS.length) return;
+    activeIndex = idx;
+    const pt = POINTS[idx];
+
+    panelBadge.textContent      = `${pt.icon} ${pt.label}`;
+    panelBadge.style.color       = pt.color;
+    panelBadge.style.borderColor = pt.color + "55";
+    panelBadge.style.background  = pt.color + "14";
+
+    estadoEl.innerHTML     = pt.estado;
+    conclusionEl.innerHTML = `<strong>Conclusión:</strong> ${pt.conclusion}`;
+
+    infoPanel.classList.toggle("optimal", pt.optimal);
+    infoPanel.classList.add("visible");
+    hintRow.classList.add("hidden");
+
+    document.querySelectorAll(".lp-item").forEach((el, i) => {
+      el.classList.toggle("active", i === idx);
+    });
+
+    draw();
+  }
+
+  // ── EVENTS ──
+  canvas.addEventListener("click", (e) => {
+    const idx = hitTest(e.clientX, e.clientY);
+    if (idx !== -1) selectPoint(idx);
+  });
+  canvas.addEventListener("mousemove", (e) => {
+    canvas.style.cursor = hitTest(e.clientX, e.clientY) !== -1 ? "pointer" : "default";
+  });
+  canvas.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    const idx = hitTest(t.clientX, t.clientY);
+    if (idx !== -1) selectPoint(idx);
+  }, { passive: false });
+
+  // ── BUILD LEGEND POINTS ──
+  POINTS.forEach((pt, idx) => {
+    const div = document.createElement("div");
+    div.className = "lp-item";
+    div.innerHTML = `
+      <span class="lp-dot" style="background:${pt.color};box-shadow:0 0 5px ${pt.color}55;"></span>
+      <span>${pt.label}</span>
+    `;
+    div.addEventListener("click", () => selectPoint(idx));
+    lpContainer.appendChild(div);
+  });
+
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+  });
+
+  resizeCanvas();
+</script>
+</body>
+</html>
