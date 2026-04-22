@@ -53,13 +53,13 @@ h2 {
 
 <!-- Aquí va el contenido teórico -->
 <p>
-Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los costos de transacción superan los beneficios de realizar intercambios de forma descentralizada. En este sentido, participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones importantes en la toma de decisiones.
+Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los <a onclick="openModal('transaccion')">costos de transacción</a>  superan los beneficios de realizar intercambios de forma descentralizada. En este sentido, participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones importantes en la toma de decisiones.
 </p>
 <p>
-Este enfoque es profundizado por Williamson, quien incorpora elementos como la especificidad de activos, la incertidumbre y la frecuencia de las transacciones. Estas variables permiten explicar por qué, en ciertos contextos, resulta más eficiente que la empresa internalice determinadas actividades en lugar de depender de terceros. En otras palabras, no todas las decisiones productivas se resuelven mejor a través del mercado.
+Este enfoque es profundizado por Williamson, quien incorpora elementos como la <a onclick="openModal('especificidad')">especificidad de activos</a>, la incertidumbre y la frecuencia de las transacciones. Estas variables permiten explicar por qué, en ciertos contextos, resulta más eficiente que la empresa internalice determinadas actividades en lugar de depender de terceros. En otras palabras, no todas las decisiones productivas se resuelven mejor a través del mercado.
 </p>
 <p>
-Sin embargo, integrar actividades dentro de la empresa también tiene costos. A medida que aumenta la integración vertical, surgen costos de coordinación asociados a la gestión interna, la burocracia y la creciente complejidad organizacional. Por ello, la empresa enfrenta constantemente un trade-off entre operar en el mercado o dentro de una estructura jerárquica.
+Sin embargo, integrar actividades dentro de la empresa también tiene costos. A medida que aumenta la integración vertical, surgen <a onclick="openModal('coordinacion')">costos de coordinación</a> asociados a la gestión interna, la burocracia y la creciente complejidad organizacional. Por ello, la empresa enfrenta constantemente un trade-off entre operar en el mercado o dentro de una estructura jerárquica.
 </p>
 <p>
 En este contexto, el nivel óptimo de integración se alcanza cuando se logra equilibrar estos dos tipos de costos, minimizando el costo total. Este marco teórico resulta clave para analizar el caso de Netflix, ya que permite entender por qué la empresa ha decidido avanzar hacia un modelo más integrado, tanto en la producción como en la distribución de contenido, con el objetivo de ganar control, reducir riesgos y mejorar su eficiencia en un entorno altamente competitivo.
@@ -92,8 +92,68 @@ En este contexto, el nivel óptimo de integración se alcanza cuando se logra eq
 </iframe>
 
 </div>
+<!-- ====== FONDO OSCURO ====== -->
+<!-- Crea una capa que cubre toda la pantalla cuando se abre la deficion del termino -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
 
-</div>
+<!-- ====== CAJA DEL MODAL ====== -->
+<!-- Aquí se mostrará el contenido (definiciones) dinámicamente -->
+<div class="modal" id="modal"></div>
+
+<script>
+
+/* ====== REFERENCIAS A ELEMENTOS HTML ====== */
+
+/* Selecciona el div donde se mostrará el contenido del modal */
+const modal = document.getElementById("modal");
+
+/* Selecciona el fondo oscuro (overlay) */
+const overlay = document.getElementById("overlay");
+
+
+/* ====== FUNCION PARA ABRIR EL MODAL ====== */
+function openModal(type){
+
+    /* Variable donde se guardará el contenido a mostrar */
+    let content = "";
+
+    /* Si el usuario hace clic en "transaccion" */
+    if(type === "transaccion"){
+        content = "<b>Costos de transacción:</b><br><br>Son los costos que aparecen cuando una empresa decide usar el mercado en lugar de hacer algo por sí misma. Incluyen el tiempo y los recursos necesarios para buscar proveedores, negociar acuerdos y asegurarse de que se cumplan.";
+    }
+
+    /* Si hace clic en "coordinacion" */
+    if(type === "coordinacion"){
+        content = "<b>Costos de coordinación:</b><br><br>Son los costos que surgen dentro de la empresa al organizar y supervisar sus propias actividades. A medida que la empresa crece e integra más funciones, necesita más control, gestión y estructura, lo que puede volverla más compleja.";
+    }
+
+    /* Si hace clic en "especificidad" */
+    if(type === "especificidad"){
+        content = "<b>Especificidad de activos:</b><br><br>Se refiere al grado en que un recurso o inversión está diseñado para un uso específico y pierde valor si se utiliza en otra cosa. Esto genera dependencia entre las partes involucradas en una transacción.";
+    }
+
+    /* Inserta el contenido seleccionado dentro del modal */
+    modal.innerHTML = content;
+
+    /* Muestra el modal en pantalla */
+    modal.style.display = "block";
+
+    /* Muestra el fondo oscuro */
+    overlay.style.display = "block";
+}
+
+
+/* ====== FUNCION PARA CERRAR EL MODAL ====== */
+function closeModal(){
+
+    /* Oculta el modal */
+    modal.style.display = "none";
+
+    /* Oculta el fondo oscuro */
+    overlay.style.display = "none";
+}
+
+</script>
 
 </body>
 </html>
