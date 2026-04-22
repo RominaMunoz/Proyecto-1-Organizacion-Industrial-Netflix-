@@ -525,18 +525,11 @@
 
     // ── PASS 1: active glow (below everything) ──
     POINTS.forEach((pt, idx) => {
-      if (idx !== activeIndex) return;
-      const p = toXY(pt.t, coordCost(pt.t), W, H);
-      ctx.save();
-      const grd = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, 26);
-      grd.addColorStop(0, pt.color + "55");
-      grd.addColorStop(1, "transparent");
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 26, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
-      ctx.restore();
-    });
+          const p   = toXY(pt.t, coordCost(pt.t), W, H);
+          const lineWidth = (idx === activeIndex ? 3 : 1.5);
+          const r   = act ? 9 : 7;
+          const offsetY = r + 13;
+        });
 
     // ── PASS 2: all inactive dots ──
     POINTS.forEach((pt, idx) => {
