@@ -1,1 +1,90 @@
+<head>
+<meta charset="UTF-8"> <!-- Permite usar tildes, ñ y caracteres especiales -->
+<title>Titulo de proyecto</title> <!-- Título que aparece en la pestaña del navegador -->
+<style>
+/* Configuración base de toda la página */
+body {
+    margin: 0; /* elimina márgenes por defecto */
+    font-family: 'Inter', sans-serif; /* aplica la fuente */
+    background: #000; /* fondo negro (estilo Netflix) */
+    color: white; /* texto blanco */
+    display: flex; 
+    justify-content: center; /* centra todo el contenido horizontalmente */
+}
 
+/* Contenedor principal que limita el ancho del contenido */
+.wrapper {
+    max-width: 1000px; /* ancho máximo */
+    width: 100%; /* ocupa todo el espacio disponible hasta ese límite */
+}
+
+/* ====== TITULOS ====== */
+/* Título principal */
+h1 {
+    text-align: center; /* centra el texto */
+    margin-top: 30px; /* espacio superior */
+    color: #E50914; /* rojo Netflix */
+}
+/* Subtítulos */
+h2 {
+    color: #E50914; /* mismo rojo para coherencia visual */
+}
+/* ====== CUADROS DE CONTENIDO ====== */
+/* Define el estilo de los bloques de contenido */
+.card {
+    background: #111; /* fondo gris oscuro */
+    padding: 25px; /* espacio interno */
+    border-radius: 12px; /* bordes redondeados */
+    margin: 20px; /* espacio externo entre tarjetas */
+    text-align: justify; /* texto alineado en ambos lados */
+    box-shadow: 0 0 15px rgba(229,9,20,0.2); /* sombra roja suave */
+}
+</style>
+</head>
+<body>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="wrapper">
+<h1>Titulo</h1> <!-- Título principal de la página -->
+
+<!-- ====== DIMENSIÓN TEÓRICA ====== -->
+<div class="card">
+<h2>Subtitulo</h2>
+
+<!-- Aquí va el contenido teórico -->
+<p>
+<!-- Explicación de conceptos -->
+</p>
+
+</div>
+
+<!-- ====== APLICACIÓN PRÁCTICA ====== -->
+<div class="card">
+<h2>Subtitulo</h2>
+
+<p>
+<!-- Aplicación practica a Netflix -->
+</p>
+
+</div>
+
+<!-- ====== CONTENIDO INTERACTIVO ====== -->
+<div class="card">
+<h2>titulo de demostracion interactiva</h2>
+
+<div class="embed-box">
+
+<!-- iframe permite insertar otro archivo HTML dentro de esta página -->
+<iframe 
+    src="nombrearchivointeractivo.html"  <!-- archivo que se carga -->
+    width="100%"  <!-- ocupa todo el ancho disponible -->
+    height="400"  <!-- altura del cuadro -->
+    style="border:none; border-radius:10px;"> <!-- sin borde y con esquinas redondeadas -->
+</iframe>
+
+</div>
+
+</div>
+
+</body>
+</html>
