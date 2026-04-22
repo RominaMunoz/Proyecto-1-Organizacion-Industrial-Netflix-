@@ -577,10 +577,17 @@
 
     // ── PASS 4: labels above all dots ──
     POINTS.forEach((pt, idx) => {
-      const p   = toXY(pt.t, coordCost(pt.t), W, H);
-      const act = idx === activeIndex;
-      const r   = act ? 9 : 7;
-      const offsetY = r + 13;
+      const p = toXY(pt.t, coordCost(pt.t), W, H);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = pt.color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = (idx === activeIndex ? 3 : 1.5); // resalta el activo, pero no oculta los demás
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    });
 
       ctx.save();
       ctx.textAlign = "center";
