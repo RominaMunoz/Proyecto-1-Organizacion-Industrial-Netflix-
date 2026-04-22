@@ -22,18 +22,17 @@ h1 {
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;/* organiza los elementos en columna y centrados */
-    padding: 0 20px; /* agrega margen lateral */
+    align-items: center;
+    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 auto; /* centra todo el conjunto */
 }
 /* ====== ENGRANAJE ====== */
 .gear-container {
     position: relative;
     width: 280px;
     height: 280px;
-    margin: 30px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center; /*  centra todo */
+    margin: 40px auto 20px auto; /* centrado real y balance vertical */
 }
 /* CÍRCULO PRINCIPAL */
 .gear {
@@ -68,23 +67,26 @@ h1 {
 }
 /* ====== FLUJO (PRODUCCIÓN → DISTRIBUCIÓN) ====== */
 .flow {
+    .flow {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 40px;
+    gap: 60px;
     margin-top: 10px;
     opacity: 0.6;
-    transition: opacity 0.4s;
 }
 .flow.active {
     opacity: 1; /* se ilumina cuando está activo */
 }
 /* ETAPAS */
 .step {
-    padding: 8px 14px;
+    .step {
+    padding: 10px 20px;
     border-radius: 20px;
     background: #222;
-    font-size: 0.9em;
+    font-size: 0.95em;
+    min-width: 120px;
+    text-align: center;
 }
 /* ====== SLIDER ====== */
 .slider-container {
@@ -97,10 +99,12 @@ h1 {
 }
 /* TEXTO DE LOS EXTREMOS */
 .label {
-    font-size: 0.8em;
-    opacity: 0.7;
-    width: 110px; /* mismo ancho en ambos lados */
+    width: 120px;
     text-align: center;
+}
+
+input[type="range"] {
+    width: 420px;
 }
 /* BARRA */
 input[type="range"] {
