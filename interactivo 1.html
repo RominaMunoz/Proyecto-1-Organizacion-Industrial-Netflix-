@@ -30,16 +30,22 @@ h1 {
     position: relative;
     width: 280px;
     height: 280px;
-    margin: 30px auto; /* centrado */
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center; /*  centra todo */
 }
 /* CÍRCULO PRINCIPAL */
 .gear {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: radial-gradient(circle, #2a2a2a 40%, #111 41%);/* efecto de profundidad */
-    transition: transform 0.6s ease;/* animación suave al girar */
+    background: radial-gradient(circle, #2a2a2a 40%, #111 41%);
+    transition: transform 0.6s ease;
     box-shadow: 0 0 40px rgba(229,9,20,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center; /* centra la N dentro del círculo *
 }
 /* DIENTES DEL ENGRANAJE */
 .gear::before {
@@ -55,13 +61,10 @@ h1 {
 }
 /* ====== LOGO NETFLIX ====== */
 .netflix-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 5em;
+    font-size: 5.5em;
     font-weight: 900;
     color: #E50914;
+    line-height: 1;
 }
 /* ====== FLUJO (PRODUCCIÓN → DISTRIBUCIÓN) ====== */
 .flow {
