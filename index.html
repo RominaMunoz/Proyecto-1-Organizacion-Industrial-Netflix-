@@ -39,6 +39,36 @@ h2 {
     text-align: justify; /* texto alineado en ambos lados */
     box-shadow: 0 0 15px rgba(229,9,20,0.2); /* sombra roja suave */
 }
+    
+/* ====== FONDO OSCURO ====== */
+.overlay {
+
+    position: fixed;/* Hace que el elemento se quede fijo en la pantalla, aunque hagas scroll */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Estas 4 propiedades hacen que el overlay cubra toda la pantalla */
+    background: rgba(0,0,0,0.7);/* Fondo negro semi-transparente (oscurece el contenido detrás) */
+    display: none;
+}
+
+/* ====== CAJA DEL MODAL ====== */
+.modal {
+
+    position: fixed;/* Igual que el overlay: queda fijo en la pantalla */
+    top: 50%;
+    left: 50%;/* Posiciona el elemento en el centro de la pantalla (aproximadamente) */
+    transform: translate(-50%, -50%);/* Ajusta el elemento para que quede perfectamente centrado */
+    background: #111;/* Fondo oscuro (coherente con estilo Netflix) */
+    border: 1px solid #E50914;/* Borde rojo para destacar el cuadro */
+    padding: 20px;/* Espacio interno entre el contenido y los bordes */
+    border-radius: 10px;/* Bordes redondeados (más moderno y visual) */
+    max-width: 420px;/* Limita el ancho del modal para que no sea demasiado grande */
+    display: none;
+    text-align: justify;/* Texto alineado en ambos lados para mejor lectura */
+   
+}
 </style>
 </head>
 <body>
