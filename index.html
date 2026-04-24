@@ -80,7 +80,7 @@ h2 {
 .slider-item .card {
     margin: 0;
     min-height: 320px;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 2 / 3;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -287,15 +287,22 @@ function closeModal(){
 const sliderContainer = document.querySelector('.card-slider');
 const sliderTrack = document.getElementById('sliderTrack');
 const originalSlides = Array.from(document.querySelectorAll('.slider-item'));
+const realSlidesCount = originalSlides.length;
+
+// Crear clones para carrusel infinito
 const firstClone = originalSlides[0].cloneNode(true);
+const secondClone = originalSlides[1].cloneNode(true);
 const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+const secondLastClone = originalSlides[originalSlides.length - 2].cloneNode(true);
 
 sliderTrack.appendChild(firstClone);
+sliderTrack.appendChild(secondClone);
+sliderTrack.insertBefore(secondLastClone, sliderTrack.firstChild);
 sliderTrack.insertBefore(lastClone, sliderTrack.firstChild);
 
 const slides = Array.from(document.querySelectorAll('.slider-item'));
-const realSlidesCount = originalSlides.length;
-let currentIndex = 1;
+let currentIndex = 2; // Empieza en el segundo clone (que es la última real)
+let isTransitioning = false;
 
 function scrollToSlide(index, smooth = true) {
   const slide = slides[index];
@@ -304,18 +311,23 @@ function scrollToSlide(index, smooth = true) {
 }
 
 function moveSlide(direction) {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
   currentIndex += direction;
-  scrollToSlide(currentIndex);
+  scrollToSlide(currentIndex, true);
 
-  if (currentIndex === 0) {
-    currentIndex = realSlidesCount;
-    setTimeout(() => scrollToSlide(currentIndex, false), 420);
-  }
-
-  if (currentIndex === slides.length - 1) {
-    currentIndex = 1;
-    setTimeout(() => scrollToSlide(currentIndex, false), 420);
-  }
+  // Detectar cuándo llegar al borde y hacer wrap invisible
+  setTimeout(() => {
+    if (currentIndex <= 1) {
+      currentIndex = realSlidesCount + 1;
+      scrollToSlide(currentIndex, false);
+    } else if (currentIndex >= slides.length - 2) {
+      currentIndex = 2;
+      scrollToSlide(currentIndex, false);
+    }
+    isTransitioning = false;
+  }, 400);
 }
 
 document.getElementById('prevSlide').addEventListener('click', () => moveSlide(-1));
