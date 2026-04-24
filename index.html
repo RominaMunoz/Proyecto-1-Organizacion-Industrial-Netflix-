@@ -52,54 +52,52 @@ h2 {
     box-shadow: 0 0 15px rgba(229,9,20,0.2); /* sombra roja suave */
 }
 
-.interactive-panel {
-    background: #181818;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 18px;
-    margin-top: 20px;
+.card-slider {
+    position: relative;
+    overflow: hidden;
+    margin: 15px 0;
 }
 
-.interactive-panel h3 {
-    margin-top: 0;
-    color: #fff;
-}
-
-.option-buttons {
+.slider-track {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+    transition: transform 0.4s ease;
 }
 
-.option-buttons button {
-    background: #E50914;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+.slider-item {
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
 }
 
-.option-buttons button:hover {
-    transform: translateY(-2px);
-    background: #ff233f;
+.slider-item .card {
+    margin: 0;
 }
 
-.factor-info {
-    margin-top: 16px;
-    padding: 18px;
-    background: #0f0f0f;
-    border: 1px solid #222;
-    border-radius: 10px;
-    line-height: 1.6;
-}
-
-.factor-info strong {
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(17,17,17,0.95);
     color: #E50914;
+    border: 1px solid rgba(229,9,20,0.6);
+    padding: 12px 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
+.nav-button.left {
+    left: 10px;
+}
+
+.nav-button.right {
+    right: 10px;
+}
+
+.nav-button:hover {
+    background: #111;
+}
+    
 /* ====== FONDO OSCURO ====== */
 .overlay {
 
@@ -145,35 +143,37 @@ a {
 
 <!-- ====== DIMENSIÓN TEÓRICA ====== -->
 <div class="card">
-<h2>De mercado a empresa: el equilibrio óptimo de la integración vertical</h2>
-
-<!-- Aquí va el contenido teórico -->
-<p>
-Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los <a onclick="openModal('transaccion')">costos de transacción</a>  superan los beneficios de realizar intercambios de forma descentralizada. En este sentido, participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones importantes en la toma de decisiones.
-</p>
-<p>
-Este enfoque es profundizado por Williamson, quien incorpora elementos como la <a onclick="openModal('especificidad')">especificidad de activos</a>, la incertidumbre y la frecuencia de las transacciones. Estas variables permiten explicar por qué, en ciertos contextos, resulta más eficiente que la empresa internalice determinadas actividades en lugar de depender de terceros. En otras palabras, no todas las decisiones productivas se resuelven mejor a través del mercado.
-</p>
-<p>
-Sin embargo, integrar actividades dentro de la empresa también tiene costos. A medida que aumenta la integración vertical, surgen <a onclick="openModal('coordinacion')">costos de coordinación</a> asociados a la gestión interna, la burocracia y la creciente complejidad organizacional. Por ello, la empresa enfrenta constantemente un trade-off entre operar en el mercado o dentro de una estructura jerárquica.
-</p>
-<p>
-En este contexto, el nivel óptimo de integración se alcanza cuando se logra equilibrar estos dos tipos de costos, minimizando el costo total. Este marco teórico resulta clave para analizar el caso de Netflix, ya que permite entender por qué la empresa ha decidido avanzar hacia un modelo más integrado, tanto en la producción como en la distribución de contenido, con el objetivo de ganar control, reducir riesgos y mejorar su eficiencia en un entorno altamente competitivo.
-</p>
-
-<div class="interactive-panel">
-  <h3>Explora el equilibrio: mercado vs empresa</h3>
-  <p>Selecciona un factor para ver cómo influye en la decisión de internalizar actividades o usar el mercado.</p>
-  <div class="option-buttons">
-    <button onclick="showFactor('transaccion')">Costos de transacción</button>
-    <button onclick="showFactor('especificidad')">Especificidad de activos</button>
-    <button onclick="showFactor('coordinacion')">Costos de coordinación</button>
+  <h2>De mercado a empresa: el equilibrio óptimo de la integración vertical</h2>
+  <div class="card-slider" aria-label="Tarjetas de la sección De mercado a empresa">
+    <button class="nav-button left" id="prevSlide" aria-label="Anterior">‹</button>
+    <div class="slider-track" id="sliderTrack">
+      <div class="slider-item">
+        <div class="card">
+          <h3>¿Por qué la empresa?</h3>
+          <p>Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los <a onclick="openModal('transaccion')">costos de transacción</a> superan los beneficios de realizar intercambios descentralizados.</p>
+        </div>
+      </div>
+      <div class="slider-item">
+        <div class="card">
+          <h3>Costos de transacción</h3>
+          <p>Participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones en la toma de decisiones.</p>
+        </div>
+      </div>
+      <div class="slider-item">
+        <div class="card">
+          <h3>Variables clave de Williamson</h3>
+          <p>Williamson incorpora elementos como la <a onclick="openModal('especificidad')">especificidad de activos</a>, la incertidumbre y la frecuencia de las transacciones para explicar cuándo es mejor internalizar actividades.</p>
+        </div>
+      </div>
+      <div class="slider-item">
+        <div class="card">
+          <h3>Trade-off y el caso Netflix</h3>
+          <p>Integrar actividades dentro de la empresa genera <a onclick="openModal('coordinacion')">costos de coordinación</a>, por lo que el nivel óptimo de integración encuentra un equilibrio entre esos costos y los de mercado.</p>
+        </div>
+      </div>
+    </div>
+    <button class="nav-button right" id="nextSlide" aria-label="Siguiente">›</button>
   </div>
-  <div id="factorInfo" class="factor-info">
-    Haz clic en uno de los botones para leer una explicación interactiva.
-  </div>
-</div>
-
 </div>
 
 <!-- ====== APLICACIÓN PRÁCTICA ====== -->
@@ -270,24 +270,26 @@ function closeModal(){
     overlay.style.display = "none";
 }
 
-function showFactor(type) {
-    const factorInfo = document.getElementById("factorInfo");
-    let message = "";
+/* ====== SLIDER DE TARJETAS ====== */
+const sliderTrack = document.getElementById('sliderTrack');
+const slides = document.querySelectorAll('.slider-item');
+const totalSlides = slides.length;
+let currentSlide = 0;
 
-    if (type === "transaccion") {
-        message = "<strong>Costos de transacción:</strong> cuando son altos, el mercado se vuelve menos eficiente y la empresa tiende a internalizar actividades para evitar gastos de búsqueda, negociación y supervisión. Esto favorece la integración vertical.";
-    }
-
-    if (type === "especificidad") {
-        message = "<strong>Especificidad de activos:</strong> si los recursos o inversiones solo sirven bien en un uso concreto, el riesgo de depender del mercado aumenta. En esos casos, la empresa puede optar por controlar internamente la producción y distribución.";
-    }
-
-    if (type === "coordinacion") {
-        message = "<strong>Costos de coordinación:</strong> al crecer la integración, la empresa enfrenta mayor complejidad interna. Si estos costos son demasiado altos, conviene delegar al mercado en vez de asumir más burocracia.";
-    }
-
-    factorInfo.innerHTML = message;
+function updateSlider() {
+  const transformValue = `translateX(-${currentSlide * 100}%)`;
+  sliderTrack.style.transform = transformValue;
 }
+
+function moveSlide(direction) {
+  currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+  updateSlider();
+}
+
+document.getElementById('prevSlide').addEventListener('click', () => moveSlide(-1));
+document.getElementById('nextSlide').addEventListener('click', () => moveSlide(1));
+
+updateSlider();
 
 </script>
 
