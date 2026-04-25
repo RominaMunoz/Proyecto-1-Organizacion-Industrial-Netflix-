@@ -1,356 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta charset="UTF-8"> <!-- Permite usar tildes, ñ y caracteres especiales -->
-<title>Proyecto Organización Industrial - Netflix</title> <!-- Título que aparece en la pestaña del navegador -->
+<meta charset="UTF-8">
+<title>Proyecto Organización Industrial - Netflix</title>
 <style>
-/* Configuración base de toda la página */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    margin: 0; /* elimina márgenes por defecto */
-    font-family: 'Inter', sans-serif; /* aplica la fuente */
-    background: #000; /* fondo negro (estilo Netflix) */
-    color: white; /* texto blanco */
-    display: flex; 
-    justify-content: center; /* centra todo el contenido horizontalmente */
+    font-family: 'Inter', sans-serif;
+    background: #000;
+    color: white;
+    display: flex;
+    justify-content: center;
 }
 
-/* Contenedor principal que limita el ancho del contenido */
 .wrapper {
-    max-width: 1300px; /* ancho máximo */
-    width: 100%; /* ocupa todo el espacio disponible hasta ese límite */
+    max-width: 1300px;
+    width: 100%;
+    padding: 0 20px 60px;
 }
+
 .embed-box iframe {
     width: 100%;
-    border: none;              /* elimina cualquier borde */
-    outline: none;             /* elimina el contorno blanco por defecto */
-    border-radius: 15px;       /* mantiene esquinas redondeadas */
-}
-#interactivo1 {
-    height: 1450px;
+    border: none;
+    border-radius: 15px;
 }
 
-#interactivo2 {
-    height: 1000px;
-}
-/* ====== TITULOS ====== */
-/* Título principal */
+#interactivo1 { height: 1450px; }
+#interactivo2 { height: 1000px; }
+
 h1 {
-    text-align: center; /* centra el texto */
-    margin-top: 30px; /* espacio superior */
-    color: #E50914; /* rojo Netflix */
-}
-/* Subtítulos */
-h2 {
-    color: #E50914; /* mismo rojo para coherencia visual */
-}
-/* ====== CUADROS DE CONTENIDO ====== */
-/* Define el estilo de los bloques de contenido */
-.card {
-    background: #111; /* fondo gris oscuro */
-    padding: 25px; /* espacio interno */
-    border-radius: 12px; /* bordes redondeados */
-    margin: 15px; /* espacio externo entre tarjetas */
-    text-align: justify; /* texto alineado en ambos lados */
-    box-shadow: 0 0 15px rgba(229,9,20,0.2); /* sombra roja suave */
-}
-
-.card-slider {
-    position: relative;
-    overflow-x: auto;
-    overflow-y: hidden;
-    margin: 15px 0;
-    padding: 0 60px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-}
-
-.card-slider::-webkit-scrollbar {
-    display: none;
-}
-
-.slider-track {
-    display: flex;
-    gap: 20px;
-}
-
-.slider-item {
-    flex: 0 0 45%;
-    box-sizing: border-box;
-    scroll-snap-align: center;
-}
-
-.slider-item .card {
-    margin: 0;
-    padding: 25px;
-    min-height: auto;
-    max-height: 480px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.slider-item .card h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
+    text-align: center;
+    margin: 30px 0 10px;
     color: #E50914;
-    font-size: 16px;
 }
 
-.slider-item .card p {
-    margin: 0;
+h2 { color: #E50914; }
+
+.card {
+    background: #111;
+    padding: 25px;
+    border-radius: 12px;
+    margin: 15px 0;
+    text-align: justify;
+    box-shadow: 0 0 15px rgba(229,9,20,0.2);
+}
+
+.card p { line-height: 1.7; margin-top: 10px; }
+
+a {
+    color: #E50914;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ====== CARRUSEL ====== */
+.carousel-wrapper {
+    position: relative;
+    margin-top: 20px;
+}
+
+.carousel-viewport {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.carousel-slide {
+    flex: 0 0 50%;
+    padding: 0 8px;
+}
+
+.carousel-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(229,9,20,0.25);
+    border-radius: 10px;
+    padding: 22px 20px;
+    min-height: 160px;
+}
+
+.carousel-card h3 {
+    color: #E50914;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.carousel-card p {
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.65;
+    color: #ccc;
+    text-align: justify;
 }
 
-.nav-button {
+.carousel-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(17,17,17,0.95);
+    width: 38px;
+    height: 38px;
+    background: rgba(20,20,20,0.97);
+    border: 1px solid rgba(229,9,20,0.5);
     color: #E50914;
-    border: 1px solid rgba(229,9,20,0.6);
-    padding: 12px 14px;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: background 0.2s;
+    line-height: 1;
 }
 
-.nav-button.left {
-    left: 10px;
+.carousel-btn:hover { background: #1c1c1c; }
+.carousel-btn.prev { left: -18px; }
+.carousel-btn.next { right: -18px; }
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
 }
 
-.nav-button.right {
-    right: 10px;
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.25s;
 }
 
-.nav-button:hover {
-    background: #111;
+.dot.active {
+    background: #E50914;
+    transform: scale(1.3);
 }
-    
-/* ====== FONDO OSCURO ====== */
+
+/* ====== MODAL ====== */
 .overlay {
-
-    position: fixed;/* Hace que el elemento se quede fijo en la pantalla, aunque hagas scroll */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* Estas 4 propiedades hacen que el overlay cubra toda la pantalla */
-    background: rgba(0,0,0,0.7);/* Fondo negro semi-transparente (oscurece el contenido detrás) */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
     display: none;
+    z-index: 100;
 }
-/* ====== ENLACES INTERACTIVOS ====== */
-a {
 
-    color: #E50914;/* Define el color del texto del enlace (rojo estilo Netflix) */
-    cursor: pointer;/* Cambia el cursor a forma de mano cuando pasas sobre el enlace,indica que es clickeable/interactivo */
-    text-decoration: underline;/* Agrega subrayado al texto,ayuda a identificar visualmente que es un enlace */
-}
-/* ====== CAJA DEL MODAL ====== */
 .modal {
-
-    position: fixed;/* Igual que el overlay: queda fijo en la pantalla */
+    position: fixed;
     top: 50%;
-    left: 50%;/* Posiciona el elemento en el centro de la pantalla (aproximadamente) */
-    transform: translate(-50%, -50%);/* Ajusta el elemento para que quede perfectamente centrado */
-    background: #111;/* Fondo oscuro (coherente con estilo Netflix) */
-    border: 1px solid #E50914;/* Borde rojo para destacar el cuadro */
-    padding: 20px;/* Espacio interno entre el contenido y los bordes */
-    border-radius: 10px;/* Bordes redondeados (más moderno y visual) */
-    max-width: 420px;/* Limita el ancho del modal para que no sea demasiado grande */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #111;
+    border: 1px solid #E50914;
+    padding: 24px;
+    border-radius: 10px;
+    max-width: 420px;
+    width: 90%;
     display: none;
-    text-align: justify;/* Texto alineado en ambos lados para mejor lectura */
-   
+    text-align: justify;
+    line-height: 1.6;
+    z-index: 101;
+    font-size: 14px;
 }
 </style>
 </head>
 <body>
 
-<!-- CONTENEDOR PRINCIPAL -->
 <div class="wrapper">
-<h1>Integración Vertical y Organización Industrial de Netflix</h1> <!-- Título principal de la página -->
+    <h1>Integración Vertical y Organización Industrial de Netflix</h1>
 
-<!-- ====== DIMENSIÓN TEÓRICA ====== -->
-<div class="card">
-  <h2>De mercado a empresa: el equilibrio óptimo de la integración vertical</h2>
-  <div class="card-slider" aria-label="Tarjetas de la sección De mercado a empresa">
-    <button class="nav-button left" id="prevSlide" aria-label="Anterior">‹</button>
-    <div class="slider-track" id="sliderTrack">
-      <div class="slider-item">
-        <div class="card">
-          <h3>¿Por qué la empresa?</h3>
-          <p>Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los <a onclick="openModal('transaccion')">costos de transacción</a> superan los beneficios de realizar intercambios descentralizados.</p>
+    <!-- SECCIÓN TEÓRICA CON CARRUSEL -->
+    <div class="card">
+        <h2>De mercado a empresa: el equilibrio óptimo de la integración vertical</h2>
+
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev" id="prevBtn">&#8249;</button>
+
+            <div class="carousel-viewport">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Slides -->
+                    <div class="carousel-slide">
+                        <div class="carousel-card">
+                            <h3>¿Por qué la empresa?</h3>
+                            <p>Desde la perspectiva de la Organización Industrial, la empresa puede entenderse como una alternativa al mercado cuando los <a onclick="openModal('transaccion')">costos de transacción</a> superan los beneficios de realizar intercambios descentralizados.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="carousel-card">
+                            <h3>Costos de transacción</h3>
+                            <p>Participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones en la toma de decisiones.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="carousel-card">
+                            <h3>Variables clave de Williamson</h3>
+                            <p>Williamson incorpora elementos como la <a onclick="openModal('especificidad')">especificidad de activos</a>, la incertidumbre y la frecuencia de las transacciones para explicar cuándo es mejor internalizar actividades.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="carousel-card">
+                            <h3>Trade-off y el caso Netflix</h3>
+                            <p>Integrar actividades dentro de la empresa genera <a onclick="openModal('coordinacion')">costos de coordinación</a>, por lo que el nivel óptimo de integración encuentra un equilibrio entre esos costos y los de mercado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-btn next" id="nextBtn">&#8250;</button>
         </div>
-      </div>
-      <div class="slider-item">
-        <div class="card">
-          <h3>Costos de transacción</h3>
-          <p>Participar en el mercado no es gratuito: implica buscar información, negociar contratos y supervisar su cumplimiento, lo que puede generar fricciones en la toma de decisiones.</p>
-        </div>
-      </div>
-      <div class="slider-item">
-        <div class="card">
-          <h3>Variables clave de Williamson</h3>
-          <p>Williamson incorpora elementos como la <a onclick="openModal('especificidad')">especificidad de activos</a>, la incertidumbre y la frecuencia de las transacciones para explicar cuándo es mejor internalizar actividades.</p>
-        </div>
-      </div>
-      <div class="slider-item">
-        <div class="card">
-          <h3>Trade-off y el caso Netflix</h3>
-          <p>Integrar actividades dentro de la empresa genera <a onclick="openModal('coordinacion')">costos de coordinación</a>, por lo que el nivel óptimo de integración encuentra un equilibrio entre esos costos y los de mercado.</p>
-        </div>
-      </div>
+
+        <div class="carousel-dots" id="dotsContainer"></div>
     </div>
-    <button class="nav-button right" id="nextSlide" aria-label="Siguiente">›</button>
-  </div>
+
+    <!-- APLICACIÓN PRÁCTICA -->
+    <div class="card">
+        <h2>De la teoría a la práctica: el caso Netflix</h2>
+        <p>En esta sección, el análisis se traslada desde la teoría hacia un caso real: <b>Netflix</b>. La empresa se ha posicionado como uno de los actores más influyentes en la industria del entretenimiento digital, destacando por la forma en que organiza sus actividades y toma decisiones estratégicas en un entorno altamente competitivo.</p>
+        <p>Más allá de su crecimiento, lo relevante es entender <b>cómo y por qué</b> la empresa estructura su funcionamiento de la manera en que lo hace. Esto permite observar, en la práctica, cómo las empresas enfrentan el desafío de coordinar sus operaciones, adaptarse al mercado y sostener su eficiencia a lo largo del tiempo.</p>
+        <p>A continuación, podrás explorar de forma interactiva este proceso, visualizando cómo se configura la organización de la empresa y cómo se ajusta su estrategia en función de distintos factores económicos.</p>
+    </div>
+
+    <!-- INTERACTIVO 1 -->
+    <div class="card">
+        <h2>Interacción entre producción y distribución en Netflix</h2>
+        <div class="embed-box">
+            <iframe id="interactivo1" src="Interactivo 1.html"></iframe>
+        </div>
+    </div>
+
+    <!-- INTERACTIVO 2 -->
+    <div class="card">
+        <h2>Gráfico Interactivo: Nivel Óptimo de Integración Vertical</h2>
+        <div class="embed-box">
+            <iframe id="interactivo2" src="Interactivo 2.html"></iframe>
+        </div>
+    </div>
 </div>
 
-<!-- ====== APLICACIÓN PRÁCTICA ====== -->
-<div class="card">
-<h2>De la teoría a la práctica: el caso Netflix</h2>
-
-<p>
-<p>En esta sección, el análisis se traslada desde la teoría hacia un caso real: <b>Netflix</b>. La empresa se ha posicionado como uno de los actores más influyentes en la industria del entretenimiento digital, destacando por la forma en que organiza sus actividades y toma decisiones estratégicas en un entorno altamente competitivo.</p>
-<p>Más allá de su crecimiento, lo relevante es entender <b>cómo y por qué</b> la empresa estructura su funcionamiento de la manera en que lo hace. Esto permite observar, en la práctica, cómo las empresas enfrentan el desafío de coordinar sus operaciones, adaptarse al mercado y sostener su eficiencia a lo largo del tiempo.</p>
-<p>A continuación, podrás explorar de forma interactiva este proceso, visualizando cómo se configura la organización de la empresa y cómo se ajusta su estrategia en función de distintos factores económicos.</p>
-</p>
-
-</div>
-
-<!-- ====== CONTENIDO INTERACTIVO ====== -->
-<div class="card">
-  <h2>Interacción entre producción y distribución en Netflix</h2>
-  <div class="embed-box">
-    <iframe 
-        id="interactivo1"
-        src="Interactivo 1.html"
-        width="100%"
-        style="border:none; border-radius:15px;">
-    </iframe>
-  </div>
-</div>
-<!-- ====== FONDO OSCURO ====== -->
-<!-- Crea una capa que cubre toda la pantalla cuando se abre la deficion del termino -->
+<!-- OVERLAY Y MODAL -->
 <div class="overlay" id="overlay" onclick="closeModal()"></div>
-
-<!-- ====== CAJA DEL MODAL ====== -->
-<!-- Aquí se mostrará el contenido (definiciones) dinámicamente -->
 <div class="modal" id="modal"></div>
-<div class="card">
-  <h2>Gráfico Interactivo: Nivel Óptimo de Integración Vertical</h2>
-  <div class="embed-box">
-    <iframe 
-        id="interactivo2"
-        src="Interactivo 2.html"
-        width="100%"
-        style="border:none; border-radius:15px;">
-    </iframe>
-  </div>
-</div>
+
 <script>
-/* ====== REFERENCIAS A ELEMENTOS HTML ====== */
+// ====== MODAL ======
+const modal   = document.getElementById('modal');
+const overlay = document.getElementById('overlay');
 
-/* Selecciona el div donde se mostrará el contenido del modal */
-const modal = document.getElementById("modal");
-
-/* Selecciona el fondo oscuro (overlay) */
-const overlay = document.getElementById("overlay");
-
-
-/* ====== FUNCION PARA ABRIR EL MODAL ====== */
-function openModal(type){
-
-    /* Variable donde se guardará el contenido a mostrar */
-    let content = "";
-
-    /* Si el usuario hace clic en "transaccion" */
-    if(type === "transaccion"){
-        content = "<b>Costos de transacción:</b><br><br>Son los costos que aparecen cuando una empresa decide usar el mercado en lugar de hacer algo por sí misma. Incluyen el tiempo y los recursos necesarios para buscar proveedores, negociar acuerdos y asegurarse de que se cumplan.";
-    }
-
-    /* Si hace clic en "coordinacion" */
-    if(type === "coordinacion"){
-        content = "<b>Costos de coordinación:</b><br><br>Son los costos que surgen dentro de la empresa al organizar y supervisar sus propias actividades. A medida que la empresa crece e integra más funciones, necesita más control, gestión y estructura, lo que puede volverla más compleja.";
-    }
-
-    /* Si hace clic en "especificidad" */
-    if(type === "especificidad"){
-        content = "<b>Especificidad de activos:</b><br><br>Se refiere al grado en que un recurso o inversión está diseñado para un uso específico y pierde valor si se utiliza en otra cosa. Esto genera dependencia entre las partes involucradas en una transacción.";
-    }
-
-    /* Inserta el contenido seleccionado dentro del modal */
-    modal.innerHTML = content;
-
-    /* Muestra el modal en pantalla */
-    modal.style.display = "block";
-
-    /* Muestra el fondo oscuro */
-    overlay.style.display = "block";
+function openModal(type) {
+    const defs = {
+        transaccion:  '<b>Costos de transacción:</b><br><br>Son los costos que aparecen cuando una empresa decide usar el mercado en lugar de hacer algo por sí misma. Incluyen el tiempo y los recursos necesarios para buscar proveedores, negociar acuerdos y asegurarse de que se cumplan.',
+        coordinacion: '<b>Costos de coordinación:</b><br><br>Son los costos que surgen dentro de la empresa al organizar y supervisar sus propias actividades. A medida que la empresa crece e integra más funciones, necesita más control, gestión y estructura, lo que puede volverla más compleja.',
+        especificidad: '<b>Especificidad de activos:</b><br><br>Se refiere al grado en que un recurso o inversión está diseñado para un uso específico y pierde valor si se utiliza en otra cosa. Esto genera dependencia entre las partes involucradas en una transacción.'
+    };
+    modal.innerHTML = defs[type] || '';
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
 }
 
-
-/* ====== FUNCION PARA CERRAR EL MODAL ====== */
-function closeModal(){
-
-    /* Oculta el modal */
-    modal.style.display = "none";
-
-    /* Oculta el fondo oscuro */
-    overlay.style.display = "none";
+function closeModal() {
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
 }
 
-/* ====== SLIDER DE TARJETAS ====== */
-const sliderContainer = document.querySelector('.card-slider');
-const sliderTrack = document.getElementById('sliderTrack');
-const originalSlides = Array.from(document.querySelectorAll('.slider-item'));
-const realSlidesCount = originalSlides.length;
+// ====== CARRUSEL ======
+const track     = document.getElementById('carouselTrack');
+const slides    = track.querySelectorAll('.carousel-slide');
+const dotsEl    = document.getElementById('dotsContainer');
+const VISIBLE   = 2;
+const total     = slides.length;
+const maxIndex  = total - VISIBLE; // 0 a 2
+let current     = 0;
+let locked      = false;
 
-// Crear clones para carrusel infinito
-const firstClone = originalSlides[0].cloneNode(true);
-const secondClone = originalSlides[1].cloneNode(true);
-const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
-const secondLastClone = originalSlides[originalSlides.length - 2].cloneNode(true);
-
-sliderTrack.appendChild(firstClone);
-sliderTrack.appendChild(secondClone);
-sliderTrack.insertBefore(secondLastClone, sliderTrack.firstChild);
-sliderTrack.insertBefore(lastClone, sliderTrack.firstChild);
-
-const slides = Array.from(document.querySelectorAll('.slider-item'));
-let currentIndex = 2; // Empieza en el segundo clone (que es la última real)
-let isTransitioning = false;
-
-function scrollToSlide(index, smooth = true) {
-  const slide = slides[index];
-  const left = slide.offsetLeft - (sliderContainer.clientWidth - slide.clientWidth) / 2;
-  sliderContainer.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
+// Crear dots (uno por slide real, no por par)
+for (let i = 0; i <= maxIndex; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
 }
 
-function moveSlide(direction) {
-  if (isTransitioning) return;
-  isTransitioning = true;
-
-  currentIndex += direction;
-  scrollToSlide(currentIndex, true);
-
-  // Detectar cuándo llegar al borde y hacer wrap invisible
-  setTimeout(() => {
-    if (currentIndex <= 1) {
-      currentIndex = realSlidesCount + 1;
-      scrollToSlide(currentIndex, false);
-    } else if (currentIndex >= slides.length - 2) {
-      currentIndex = 2;
-      scrollToSlide(currentIndex, false);
-    }
-    isTransitioning = false;
-  }, 400);
+function updateDots() {
+    dotsEl.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+    });
 }
 
-document.getElementById('prevSlide').addEventListener('click', () => moveSlide(-1));
-document.getElementById('nextSlide').addEventListener('click', () => moveSlide(1));
+function goTo(index) {
+    if (locked) return;
+    current = Math.max(0, Math.min(index, maxIndex));
+    // Cada slide ocupa 50% del viewport → desplazar current * 50%
+    track.style.transform = `translateX(-${current * 50}%)`;
+    updateDots();
+}
 
-window.addEventListener('load', () => scrollToSlide(currentIndex, false));
+function move(dir) {
+    if (locked) return;
+    locked = true;
+    goTo(current + dir);
+    setTimeout(() => { locked = false; }, 420);
+}
 
+document.getElementById('prevBtn').addEventListener('click', () => move(-1));
+document.getElementById('nextBtn').addEventListener('click', () => move(1));
+
+// Swipe táctil
+let touchStartX = 0;
+track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+track.addEventListener('touchend',   e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) move(diff > 0 ? 1 : -1);
+});
 </script>
-
 </body>
 </html>
